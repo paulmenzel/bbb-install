@@ -558,7 +558,7 @@ check_version() {
   check_root
   need_pkg apt-transport-https
   if ! apt-key list | grep -q "BigBlueButton apt-get"; then
-    wget "https://$PACKAGE_REPOSITORY/repo/bigbluebutton.asc" -O- | apt-key add -
+    wget -q "https://$PACKAGE_REPOSITORY/repo/bigbluebutton.asc" -O- | apt-key add -
   fi
 
   # Check if were upgrading from 2.0 (the ownership of /etc/bigbluebutton/nginx/web has changed from bbb-client to bbb-web)
