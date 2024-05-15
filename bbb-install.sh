@@ -27,11 +27,11 @@
 #  Install BigBlueButton with a SSL certificate from Let's Encrypt using hostname bbb.example.com
 #  and email address info@example.com and apply a basic firewall
 #
-#    wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -w -v bionic-24 -s bbb.example.com -e info@example.com 
+#    wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -w -v bionic-24 -s bbb.example.com -e info@example.com
 #
 #  Same as above but also install the API examples for testing.
 #
-#    wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -w -a -v bionic-24 -s bbb.example.com -e info@example.com 
+#    wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -w -a -v bionic-24 -s bbb.example.com -e info@example.com
 #
 #  Install BigBlueButton with SSL + Greenlight
 #
@@ -62,7 +62,7 @@ OPTIONS (install BigBlueButton):
   -g                     Install Greenlight
   -c <hostname>:<secret> Configure with coturn server at <hostname> using <secret>
 
-  -m <link_path>         Create a Symbolic link from /var/bigbluebutton to <link_path> 
+  -m <link_path>         Create a Symbolic link from /var/bigbluebutton to <link_path>
 
   -p <host>[:<port>]     Use apt-get proxy at <host> (default port 3142)
   -r <host>              Use alternative apt repository (such as packages-eu.bigbluebutton.org)
@@ -122,7 +122,7 @@ main() {
 
       s)
         HOST=$OPTARG
-        if [ "$HOST" == "bbb.example.com" ]; then 
+        if [ "$HOST" == "bbb.example.com" ]; then
           err "You must specify a valid hostname (not the hostname given in the docs)."
         fi
         ;;
@@ -131,7 +131,7 @@ main() {
         ;;
       e)
         EMAIL=$OPTARG
-        if [ "$EMAIL" == "info@example.com" ]; then 
+        if [ "$EMAIL" == "info@example.com" ]; then
           err "You must specify a valid email address (not the email in the docs)."
         fi
         ;;
@@ -214,11 +214,11 @@ main() {
   # We're installing BigBlueButton
   env
 
-  if [ "$DISTRO" == "xenial" ]; then 
+  if [ "$DISTRO" == "xenial" ]; then
     check_ubuntu 16.04
     TOMCAT_USER=tomcat7
   fi
-  if [ "$DISTRO" == "bionic" ]; then 
+  if [ "$DISTRO" == "bionic" ]; then
     check_ubuntu 18.04
     TOMCAT_USER=tomcat8
   fi
@@ -230,9 +230,9 @@ main() {
 
   get_IP "$HOST"
 
-  if [ "$DISTRO" == "xenial" ]; then 
+  if [ "$DISTRO" == "xenial" ]; then
     echo "** Ubuntu 16.04 is now end of life.  Recommend installing BigBlueButton 2.3 on Ubuntu 18.04"
-    rm -rf /etc/apt/sources.list.d/jonathonf-ubuntu-ffmpeg-4-xenial.list 
+    rm -rf /etc/apt/sources.list.d/jonathonf-ubuntu-ffmpeg-4-xenial.list
     need_ppa rmescandon-ubuntu-yq-xenial.list         ppa:rmescandon/yq         CC86BB64 # Edit yaml files with yq
     need_ppa libreoffice-ubuntu-ppa-xenial.list       ppa:libreoffice/ppa       1378B444 # Latest libreoffice
     need_ppa bigbluebutton-ubuntu-support-xenial.list ppa:bigbluebutton/support E95B94BC # Latest version of ffmpeg
@@ -254,7 +254,7 @@ main() {
     if ! apt-key list A15703C6 | grep -q A15703C6; then
       wget -qO - https://www.mongodb.org/static/pgp/server-3.4.asc | sudo apt-key add -
     fi
-    if apt-key list A15703C6 | grep -q expired; then 
+    if apt-key list A15703C6 | grep -q expired; then
       wget -qO - https://www.mongodb.org/static/pgp/server-3.4.asc | sudo apt-key add -
     fi
     rm -rf /etc/apt/sources.list.d/mongodb-org-4.0.list
@@ -295,7 +295,7 @@ main() {
     need_pkg ruby
     gem install bundler -v 2.1.4
 
-    BBB_WEB_ETC_CONFIG=/etc/bigbluebutton/bbb-web.properties            # Override file for local settings 
+    BBB_WEB_ETC_CONFIG=/etc/bigbluebutton/bbb-web.properties            # Override file for local settings
 
     need_pkg openjdk-8-jre
     update-java-alternatives -s java-1.8.0-openjdk-amd64
@@ -324,7 +324,7 @@ main() {
   check_nat
   check_LimitNOFILE
 
-  configure_HTML5 
+  configure_HTML5
 
   if [ -n "$API_DEMOS" ]; then
     need_pkg bbb-demo
@@ -357,11 +357,11 @@ main() {
   fi
 
   if [ -n "$UFW" ]; then
-    setup_ufw 
+    setup_ufw
   fi
 
 
-  if [ "$DISTRO" == "xenial" ]; then 
+  if [ "$DISTRO" == "xenial" ]; then
     # Add overrides to ensure redis-server is started before bbb-apps-akka, bbb-fsesl-akka, and bbb-transcode-akka
     if [ ! -f /etc/systemd/system/bbb-apps-akka.service.d/override.conf ];then
       mkdir -p /etc/systemd/system/bbb-apps-akka.service.d
@@ -467,7 +467,7 @@ get_IP() {
   fi
 
   local external_ip
-  # Determine external IP 
+  # Determine external IP
   if grep -sqi ^ec2 /sys/devices/virtual/dmi/id/product_uuid; then
     # EC2
     external_ip=$(wget -qO- http://169.254.169.254/latest/meta-data/public-ipv4)
@@ -499,17 +499,17 @@ get_IP() {
     nc -l -p 443 > /dev/null 2>&1 &
     nc_PID=$!
     sleep 1
-    
+
      # Check if we can reach the server through it's external IP address
      if nc -zvw3 "$external_ip" 443  > /dev/null 2>&1; then
        INTERNAL_IP=$IP
        IP=$external_ip
-       echo 
+       echo
        echo "  Detected this server has an internal/external IP address."
-       echo 
+       echo
        echo "      INTERNAL_IP: $INTERNAL_IP"
        echo "    (external) IP: $IP"
-       echo 
+       echo
      fi
 
     kill $nc_PID  > /dev/null 2>&1;
@@ -537,7 +537,7 @@ need_pkg() {
 }
 
 need_ppa() {
-  need_pkg software-properties-common 
+  need_pkg software-properties-common
   if [ ! -f "/etc/apt/sources.list.d/$1" ]; then
     LC_CTYPE=C.UTF-8 add-apt-repository -y "$2"
   fi
@@ -594,10 +594,10 @@ check_coturn() {
   if [ -z "$COTURN_HOST" ];   then err "-c option must contain <hostname>"; fi
   if [ -z "$COTURN_SECRET" ]; then err "-c option must contain <secret>"; fi
 
-  if [ "$COTURN_HOST" == "turn.example.com" ]; then 
+  if [ "$COTURN_HOST" == "turn.example.com" ]; then
     err "You must specify a valid hostname (not the example given in the docs)"
   fi
-  if [ "$COTURN_SECRET" == "1234abcd" ]; then 
+  if [ "$COTURN_SECRET" == "1234abcd" ]; then
     err "You must specify a new password (not the example given in the docs)."
   fi
 
@@ -663,8 +663,8 @@ check_nat() {
 
     # If dummy NIC is not in dummy-nic.service (or the file does not exist), update/create it
     if ! grep -q "$IP" /lib/systemd/system/dummy-nic.service > /dev/null 2>&1; then
-      if [ -f /lib/systemd/system/dummy-nic.service ]; then 
-        DAEMON_RELOAD=true; 
+      if [ -f /lib/systemd/system/dummy-nic.service ]; then
+        DAEMON_RELOAD=true;
       fi
 
       cat > /lib/systemd/system/dummy-nic.service << HERE
@@ -696,7 +696,7 @@ check_LimitNOFILE() {
 
   if [ "$CPU" -ge 8 ]; then
     if [ -f /lib/systemd/system/bbb-web.service ]; then
-      # Let's create an override file to increase the number of LimitNOFILE 
+      # Let's create an override file to increase the number of LimitNOFILE
       mkdir -p /etc/systemd/system/bbb-web.service.d/
       cat > /etc/systemd/system/bbb-web.service.d/override.conf << HERE
 [Service]
@@ -899,7 +899,7 @@ server {
   listen 80;
   listen [::]:80;
   server_name $HOST;
-  
+
   return 301 https://\$server_name\$request_uri; #redirect HTTP to HTTPS
 
 }
@@ -915,7 +915,7 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
     ssl_dhparam /etc/nginx/ssl/ffdhe2048.pem;
-    
+
     # HSTS (comment out to enable)
     #add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
@@ -935,7 +935,7 @@ HERE
 
   # Configure rest of BigBlueButton Configuration for SSL
   xmlstarlet edit --inplace --update '//param[@name="wss-binding"]/@value' --value "$IP:7443" /opt/freeswitch/conf/sip_profiles/external.xml
- 
+
   # shellcheck disable=SC1091
   eval "$(source /etc/bigbluebutton/bigbluebutton-release && declare -p BIGBLUEBUTTON_RELEASE)"
   if [[ $BIGBLUEBUTTON_RELEASE == 2.2.* ]] && [[ ${BIGBLUEBUTTON_RELEASE#*.*.} -lt 29 ]]; then
@@ -953,7 +953,7 @@ HERE
   fi
 
   yq w -i /usr/local/bigbluebutton/core/scripts/bigbluebutton.yml playback_protocol https
-  chmod 644 /usr/local/bigbluebutton/core/scripts/bigbluebutton.yml 
+  chmod 644 /usr/local/bigbluebutton/core/scripts/bigbluebutton.yml
 
   if [ -f "/var/lib/$TOMCAT_USER/webapps/demo/bbb_api_conf.jsp" ]; then
     sed -i 's/String BigBlueButtonURL = "http:/String BigBlueButtonURL = "https:/g' "/var/lib/$TOMCAT_USER/webapps/demo/bbb_api_conf.jsp"
@@ -1023,7 +1023,7 @@ configure_coturn() {
         <constructor-arg index="1" value="turns:$COTURN_HOST:443?transport=tcp"/>
         <constructor-arg index="2" value="86400"/>
     </bean>
-    
+
     <bean id="turn1" class="org.bigbluebutton.web.services.turn.TurnServer">
         <constructor-arg index="0" value="$COTURN_SECRET"/>
         <constructor-arg index="1" value="turn:$COTURN_HOST:443?transport=tcp"/>
@@ -1133,7 +1133,7 @@ HERE
 
   # Eanble coturn to bind to port 443 with CAP_NET_BIND_SERVICE
   mkdir -p /etc/systemd/system/coturn.service.d
-  rm -rf /etc/systemd/system/coturn.service.d/ansible.conf      # Remove previous file 
+  rm -rf /etc/systemd/system/coturn.service.d/ansible.conf      # Remove previous file
   cat > /etc/systemd/system/coturn.service.d/override.conf <<HERE
 [Service]
 LimitNOFILE=1048576
